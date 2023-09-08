@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_tel">
+
+    <fragment
+        android:id="@+id/navigation_tel"
+        android:name="com.jang.crawling_project.ui.tel.TelFragment"
+        android:label="@string/title_tel"
+        app:icon="@drawable/ic_phone_filled_24dp"
+        tools:layout="@layout/fragment_tel" />
+
+    <fragment
+        android:id="@+id/navigation_bookmark"
+        android:name="com.jang.crawling_project.ui.bookmark.BookmarkFragment"
+        android:label="@string/title_book"
+        app:icon="@drawable/ic_star_black_filled_24dp"
+        tools:layout="@layout/fragment_bookmark" />
+
+</navigation>
