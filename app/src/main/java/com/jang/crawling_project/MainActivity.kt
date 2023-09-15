@@ -9,6 +9,19 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.jang.crawling_project.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.internal.tls.TrustRootIndex
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +32,15 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // SSL 연결 설정
+        val client = createOkHttpClient()
+
+        // 백그라운드 스레드에서 HTTPS 요청 예시
+        GlobalScope.launch(Dispatchers.IO) {
+            val response = makeHttpsRequest(client, "https://www.example.com")
+            // 응답 처리 등 추가 코드
+        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -63,6 +85,25 @@ class MainActivity : AppCompatActivity() {
             // 이벤트 처리를 계속 진행
             true
         }
+    }
+
+    private fun createOkHttpClient(): OkHttpClient {
+        // SSL 소켓 팩토리 및 트러스트 매니저 생성
+        val trustAllCerts = TrustAllCerts()
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null, arrayOf<TrustManager>(trustAllCerts), null)
+
+        return OkHttpClient.Builder()
+            .sslSocketFactory(sslContext.socketFactory, trustAllCerts)
+            .hostnameVerifier { _, _ -> true } // 호스트 검증을 비활성화합니다.
+            .build()
+    }
+
+    private fun makeHttpsRequest(client: OkHttpClient, url: String): Response {
+        val request = Request.Builder()
+            .url(url)
+            .build()
+        return client.newCall(request).execute()
     }
 
     // 선택되지 않은 탭의 아이콘 리소스를 반환하는 함수

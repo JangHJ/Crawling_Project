@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 기본 네트워크 구성 -->
+    <base-config cleartextTrafficPermitted="false">
+        <!-- 시스템 루트 CA를 신뢰 -->
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- 특정 도메인에 대한 네트워크 구성 -->
+    <domain-config>
+        <domain includeSubdomains="true">www.swu.ac.kr</domain>
+        <!-- 사용자가 제공한 my_cert 리소스를 신뢰 -->
+        <!-- 이 부분에서 사용자가 제공한 CA 인증서를 추가 -->
+        <trust-anchors>
+            <certificates src="@raw/my_cert" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
